@@ -6,15 +6,16 @@ import store from '../stores/store';
 
 export default class MyApp extends App {
 
-  static async getInitialProps ({ Component, ctx }) {
+  static async getInitialProps({ Component, ctx }) {
+    const isServer = typeof window === 'undefined';
     let pageProps = {};
-		if (Component.getInitialProps) {
-			pageProps = await Component.getInitialProps(ctx);
-		}
-		return {
+    if (Component.getInitialProps) {
+      pageProps = await Component.getInitialProps(ctx);
+    }
+    return {
       pageProps,
-			snapshot: getSnapshot(store)
-		};
+      ...isServer && { snapshot: getSnapshot(store) } // make a snapshot only on the server side
+    };
   }
 
   constructor (props) {
